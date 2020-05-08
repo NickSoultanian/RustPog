@@ -25,6 +25,7 @@ impl Entity {
 struct GameState {
     player1: Entity,
     player2: Entity,
+    centerLine: Entity,
 }
 
 impl GameState {
@@ -39,9 +40,14 @@ impl GameState {
             WINDOW_WIDTH - player2_texture.width() as f32 - 16.0,
             (WINDOW_HEIGHT - player2_texture.height() as f32)/2.0,
         );
+        let center_texture = Texture::new(ctx, "./resources/center.png")?;
+        let center_position = Vec2::new(
+            0 as f32, 0 as f32,
+        );
         Ok(GameState {
             player1: Entity::new(player1_texture, player1_position),
             player2: Entity::new(player2_texture, player2_position),
+            centerLine: Entity::new(center_texture, center_position),
         })
     }
 }
@@ -72,6 +78,7 @@ impl State for GameState {
 
         graphics::draw(ctx, &self.player1.texture, self.player1.position);
         graphics::draw(ctx, &self.player2.texture, self.player2.position);
+        graphics::draw(ctx, &self.centerLine.texture, self.centerLine.position);
         Ok(())
     }
 }
