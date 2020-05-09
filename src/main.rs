@@ -79,6 +79,8 @@ struct GameState {
     player2_score3: Entity,
     player2_score4: Entity,
     player2_score5: Entity,
+    player1_win: Entity,
+    player2_win: Entity,
 }
 
 impl GameState {
@@ -151,6 +153,8 @@ impl GameState {
             player2_score3: Entity::new(p2score3_texture, score2_position),
             player2_score4: Entity::new(p2score4_texture, score2_position),
             player2_score5: Entity::new(p2score5_texture, score2_position),
+            player1_win: Entity::new(p1Win_Screen, center_position),
+            player2_win: Entity::new(p2Win_Screen, center_position),
         })
     }
 }
@@ -220,10 +224,12 @@ impl State for GameState {
 
         if unsafe { PlAYER1_SCORE } == 5 {
             self.ball.velocity = Vec2::new(BALL_STOP,0.0); //pauses game once win condition is reached
+            graphics::draw(ctx, &self.player1_win.texture, self.player1_win.position);
         }
 
         if unsafe { PlAYER2_SCORE } == 5 {
             self.ball.velocity = Vec2::new(BALL_STOP,0.0);
+            graphics::draw(ctx, &self.player2_win.texture, self.player2_win.position);
         }
 
         Ok(())
