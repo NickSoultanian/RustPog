@@ -122,6 +122,10 @@ impl GameState {
         let p2score4_texture = Texture::new(ctx, "./resources/4.png")?;
         let p2score5_texture = Texture::new(ctx, "./resources/5.png")?;
 
+        let p1Win_Screen = Texture::new(ctx,"./resources/p1_Wins.png")?;
+        let p2Win_Screen = Texture::new(ctx,"./resources/p2_Wins.png")?;
+
+
         let score1_position = Vec2::new(
             5.0,
             5.0,
@@ -215,7 +219,7 @@ impl State for GameState {
         }
 
         if unsafe { PlAYER1_SCORE } == 5 {
-            self.ball.velocity = Vec2::new(BALL_STOP,0.0);
+            self.ball.velocity = Vec2::new(BALL_STOP,0.0); //pauses game once win condition is reached
         }
 
         if unsafe { PlAYER2_SCORE } == 5 {
