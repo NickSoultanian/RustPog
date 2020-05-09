@@ -8,6 +8,7 @@ const PADDLE_SPEED: f32 = 8.0;
 const WINDOW_WIDTH: f32 = 640.0;
 const WINDOW_HEIGHT: f32 = 480.0;
 const BALL_SPEED: f32 = 5.0;
+const BALL_STOP: f32 = 0.0;
 const PADDLE_SPIN: f32 = 4.0;
 const BALL_ACC: f32 = 0.05;
 static mut PADDLE_CENTER: f32 = 0.0;
@@ -214,11 +215,11 @@ impl State for GameState {
         }
 
         if unsafe { PlAYER1_SCORE } == 5 {
-
+            self.ball.velocity = Vec2::new(BALL_STOP,0.0);
         }
 
         if unsafe { PlAYER2_SCORE } == 5 {
-
+            self.ball.velocity = Vec2::new(BALL_STOP,0.0);
         }
 
         Ok(())
