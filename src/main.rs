@@ -10,6 +10,9 @@ const WINDOW_HEIGHT: f32 = 480.0;
 const BALL_SPEED: f32 = 5.0;
 const PADDLE_SPIN: f32 = 4.0;
 const BALL_ACC: f32 = 0.05;
+static mut PADDLE_CENTER: f32 = 0.0;
+static mut PlAYER1_SCORE: i32 = 0;
+static mut PlAYER2_SCORE: i32 = 0;
 
 fn main() -> tetra::Result{
     ContextBuilder::new("Pog", WINDOW_WIDTH as i32, WINDOW_HEIGHT as i32) //holds framework of game
@@ -65,6 +68,16 @@ struct GameState {
     player2: Entity,
     centerLine: Entity,
     ball: Entity,
+    player1_score1: Entity,
+    player1_score2: Entity,
+    player1_score3: Entity,
+    player1_score4: Entity,
+    player1_score5: Entity,
+    player2_score1: Entity,
+    player2_score2: Entity,
+    player2_score3: Entity,
+    player2_score4: Entity,
+    player2_score5: Entity,
 }
 
 impl GameState {
@@ -81,6 +94,8 @@ impl GameState {
             (WINDOW_HEIGHT - player2_texture.height() as f32)/2.0,
         );
 
+        unsafe { PADDLE_CENTER = (WINDOW_HEIGHT - player1_texture.height() as f32)/2.0; }
+
         let center_texture = Texture::new(ctx, "./resources/center.png")?;
         let center_position = Vec2::new(
             0 as f32, 0 as f32,
@@ -94,11 +109,43 @@ impl GameState {
 
         let ball_velocity = Vec2::new(-BALL_SPEED, 0.0);
 
+        let score1_texture = Texture::new(ctx, "./resources/1.png")?;
+        let score2_texture = Texture::new(ctx, "./resources/2.png")?;
+        let score3_texture = Texture::new(ctx, "./resources/3.png")?;
+        let score4_texture = Texture::new(ctx, "./resources/4.png")?;
+        let score5_texture = Texture::new(ctx, "./resources/5.png")?;
+
+        let p2score1_texture = Texture::new(ctx, "./resources/1.png")?;
+        let p2score2_texture = Texture::new(ctx, "./resources/2.png")?;
+        let p2score3_texture = Texture::new(ctx, "./resources/3.png")?;
+        let p2score4_texture = Texture::new(ctx, "./resources/4.png")?;
+        let p2score5_texture = Texture::new(ctx, "./resources/5.png")?;
+
+        let score1_position = Vec2::new(
+            5.0,
+            5.0,
+        );
+
+        let score2_position = Vec2::new(
+            500.0,
+            5.0,
+        );
+
         Ok(GameState {
             player1: Entity::new(player1_texture, player1_position),
             player2: Entity::new(player2_texture, player2_position),
             centerLine: Entity::new(center_texture, center_position),
             ball: Entity::with_velocity(ball_texture, ball_position, ball_velocity),
+            player1_score1: Entity::new(score1_texture, score1_position),
+            player1_score2: Entity::new(score2_texture, score1_position),
+            player1_score3: Entity::new(score3_texture, score1_position),
+            player1_score4: Entity::new(score4_texture, score1_position),
+            player1_score5: Entity::new(score5_texture, score1_position),
+            player2_score1: Entity::new(p2score1_texture, score2_position),
+            player2_score2: Entity::new(p2score2_texture, score2_position),
+            player2_score3: Entity::new(p2score3_texture, score2_position),
+            player2_score4: Entity::new(p2score4_texture, score2_position),
+            player2_score5: Entity::new(p2score5_texture, score2_position),
         })
     }
 }
@@ -148,14 +195,30 @@ impl State for GameState {
             self.ball.velocity.y = -self.ball.velocity.y;
         }
 
-        if self.ball.position.x < 0.0 {
-            window::quit(ctx);
-            println!("Player 2 wins!");
+        if self.ball.position.x < 0.0 && unsafe { PlAYER1_SCORE } != 5{
+            self.ball.position.x = WINDOW_WIDTH / 2.0;
+            self.ball.position.y = WINDOW_HEIGHT / 2.0;
+            self.ball.velocity = Vec2::new(-BALL_SPEED, 0.0);
+            self.player1.position.y = unsafe { PADDLE_CENTER };
+            self.player2.position.y = unsafe { PADDLE_CENTER };
+            unsafe { PlAYER2_SCORE += 1 }
         }
 
-        if self.ball.position.x > WINDOW_WIDTH {
-            window::quit(ctx);
-            println!("Player 1 wins!");
+        if self.ball.position.x > WINDOW_WIDTH && unsafe { PlAYER1_SCORE } != 5{
+            self.ball.position.x = WINDOW_WIDTH / 2.0;
+            self.ball.position.y = WINDOW_HEIGHT / 2.0;
+            self.ball.velocity = Vec2::new(-BALL_SPEED, 0.0);
+            self.player1.position.y = unsafe { PADDLE_CENTER };
+            self.player2.position.y = unsafe { PADDLE_CENTER };
+            unsafe { PlAYER1_SCORE += 1 }
+        }
+
+        if unsafe { PlAYER1_SCORE } == 5 {
+
+        }
+
+        if unsafe { PlAYER2_SCORE } == 5 {
+
         }
 
         Ok(())
@@ -163,6 +226,37 @@ impl State for GameState {
 
     fn draw(&mut self, ctx: &mut Context) -> tetra::Result {
         graphics::clear(ctx, Color::rgb(0.392, 0.584, 0.929));
+
+        if unsafe { PlAYER1_SCORE } == 1 {
+            graphics::draw(ctx, &self.player1_score1.texture, self.player1_score1.position);
+        }
+        if unsafe { PlAYER1_SCORE } == 2 {
+            graphics::draw(ctx, &self.player1_score2.texture, self.player1_score2.position);
+        }
+        if unsafe { PlAYER1_SCORE } == 3 {
+            graphics::draw(ctx, &self.player1_score3.texture, self.player1_score3.position);
+        }
+        if unsafe { PlAYER1_SCORE } == 4 {
+            graphics::draw(ctx, &self.player1_score4.texture, self.player1_score4.position);
+        }
+        if unsafe { PlAYER1_SCORE } == 5 {
+            graphics::draw(ctx, &self.player1_score5.texture, self.player1_score5.position);
+        }
+        if unsafe { PlAYER2_SCORE } == 1 {
+            graphics::draw(ctx, &self.player2_score1.texture, self.player2_score1.position);
+        }
+        if unsafe { PlAYER2_SCORE } == 2 {
+            graphics::draw(ctx, &self.player2_score2.texture, self.player2_score2.position);
+        }
+        if unsafe { PlAYER2_SCORE } == 3 {
+            graphics::draw(ctx, &self.player2_score3.texture, self.player2_score3.position);
+        }
+        if unsafe { PlAYER2_SCORE } == 4 {
+            graphics::draw(ctx, &self.player2_score4.texture, self.player2_score4.position);
+        }
+        if unsafe { PlAYER2_SCORE } == 5 {
+            graphics::draw(ctx, &self.player2_score5.texture, self.player2_score5.position);
+        }
 
         graphics::draw(ctx, &self.player1.texture, self.player1.position);
         graphics::draw(ctx, &self.player2.texture, self.player2.position);
