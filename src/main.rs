@@ -4,6 +4,7 @@ use tetra::math::Vec2;
 use tetra::window;
 use tetra::{Context, ContextBuilder, State};
 
+
 const PADDLE_SPEED: f32 = 8.0;
 const WINDOW_WIDTH: f32 = 640.0;
 const WINDOW_HEIGHT: f32 = 480.0;
@@ -68,6 +69,7 @@ struct GameState {
     player1: Entity,
     player2: Entity,
     centerLine: Entity,
+    centerLineb: Entity,
     ball: Entity,
     player1_score1: Entity,
     player1_score2: Entity,
@@ -103,6 +105,8 @@ impl GameState {
         let center_position = Vec2::new(
             0 as f32, 0 as f32,
         );
+        let center_textureb = Texture::new(ctx, "./resources/centerb.png")?;
+
 
         let ball_texture = Texture::new(ctx, "./resources/ball.png")?;
         let ball_position = Vec2:: new(
@@ -155,12 +159,14 @@ impl GameState {
             player2_score5: Entity::new(p2score5_texture, score2_position),
             player1_win: Entity::new(p1Win_Screen, center_position),
             player2_win: Entity::new(p2Win_Screen, center_position),
+            centerLineb: Entity::new(center_textureb, center_position),
         })
     }
 }
 //stores current state of the game
 impl State for GameState {
     fn update(&mut self, ctx: &mut Context) -> tetra::Result {
+
         if input::is_key_down(ctx, Key::W) {
             self.player1.position.y -= PADDLE_SPEED;
         }
@@ -221,15 +227,22 @@ impl State for GameState {
             self.player2.position.y = unsafe { PADDLE_CENTER };
             unsafe { PlAYER1_SCORE += 1 }
         }
+        if unsafe {PlAYER1_SCORE } < 5 || unsafe { PlAYER2_SCORE } < 5 {
+            graphics::draw(ctx, &self.centerLine.texture, self.centerLine.position);
+
+        }
 
         if unsafe { PlAYER1_SCORE } == 5 {
             self.ball.velocity = Vec2::new(BALL_STOP,0.0); //pauses game once win condition is reached
+            graphics::draw(ctx, &self.centerLineb.texture, self.centerLine.position);
             graphics::draw(ctx, &self.player1_win.texture, self.player1_win.position);
         }
 
         if unsafe { PlAYER2_SCORE } == 5 {
             self.ball.velocity = Vec2::new(BALL_STOP,0.0);
+            graphics::draw(ctx, &self.centerLineb.texture, self.centerLine.position);
             graphics::draw(ctx, &self.player2_win.texture, self.player2_win.position);
+
         }
 
         Ok(())
@@ -271,7 +284,6 @@ impl State for GameState {
 
         graphics::draw(ctx, &self.player1.texture, self.player1.position);
         graphics::draw(ctx, &self.player2.texture, self.player2.position);
-        graphics::draw(ctx, &self.centerLine.texture, self.centerLine.position);
         graphics::draw(ctx, &self.ball.texture, self.ball.position);
         Ok(())
     }
