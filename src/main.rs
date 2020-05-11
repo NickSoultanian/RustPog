@@ -168,19 +168,28 @@ impl State for GameState {
     fn update(&mut self, ctx: &mut Context) -> tetra::Result {
 
         if input::is_key_down(ctx, Key::W) {
-            self.player1.position.y -= PADDLE_SPEED;
+            if self.player1.position.y > 0.0 {
+                self.player1.position.y -= PADDLE_SPEED;
+            }
         }
 
         if input::is_key_down(ctx, Key::S) {
-            self.player1.position.y += PADDLE_SPEED;
+            if self.player1.position.y < 375.0 {
+                self.player1.position.y += PADDLE_SPEED;
+            }
         }
 
         if input::is_key_down(ctx, Key::Up){
-            self.player2.position.y -= PADDLE_SPEED;
+            if self.player2.position.y > 0.0 {
+                self.player2.position.y -= PADDLE_SPEED;
+            }
         }
 
         if input::is_key_down(ctx, Key::Down){
-            self.player2.position.y += PADDLE_SPEED;
+            if self.player2.position.y < 375.0 {
+                self.player2.position.y += PADDLE_SPEED;
+            }
+
         }
 
         self.ball.position += self.ball.velocity;
